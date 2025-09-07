@@ -1,0 +1,32 @@
+Variables: GDP per capita, Exchange rate, Brent Crude Oil prices, Unemployment rate, Median age, Population.
+Target: Tourist arrivals
+
+Transformations:
+
+Tourist arrivals
+Transformation: Keep raw. log for robustness.
+Reason: Distribution not heavily skewed. Main dependent variable.
+
+GDP per capita (PPP)
+Transformation: Log transformation, also delta log for growth interpretation.
+Reason: Right-skewed, large across country differences. log stabilizes variance and allows % growth interpretation.
+
+Exchange rates (vs. EUR)
+Transformation: delta log or % change to allow growth interpretation
+Reason: Highly skewed with extreme outliers (TRY, RUB); log compresses range and delta log (or percentage change) captures exchange rate shocks.
+
+Oil price (Brent)
+Transformation: No transformation or delta log (or % change) transformation for robustness
+Reason: No hard skew, but growth interpretation can be benificial
+
+Unemployment rate (%)
+Transformation: Keep (%) or delta log for growth interpretation
+Reason: Already in (%), can be more robust
+
+Median age (years)
+Transformation: Keep.
+Reason: Smooth
+
+Population growth
+Transformation: Keep (%)
+Reason: Already in change (%)

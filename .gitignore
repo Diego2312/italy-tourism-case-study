@@ -1,0 +1,8 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+data/final/
+data/processed/
+plots/diagnostics/
+plots/study_tourism/
