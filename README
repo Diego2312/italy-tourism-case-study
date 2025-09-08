@@ -1,6 +1,50 @@
 MAIN README
 
+
+Do the economic and demographic drivers of tourist arrivals to Italy differ between
+European countries and overseas countries?
+
+European countries: Austria, France, Germany, Russia, Turkey, United Kingdom
+Overseas countries: Australia, Brazil, Canada, China, Japan, South Africa, United States
+
+Study time frame: 1990 - 2024
+
+Tourist definition: For this study, a tourist is defined/assumed to be any person who arrives into any Hotel, Hostel or similar accomodation
+See https://ec.europa.eu/eurostat/cache/metadata/en/tour_occ_esms.htm for more detail
+
+
+HYPOTHESIS:
+
+H1: Overseas tourist arrivals are more heavily driven by GDP per capita than European countries
+H2: Tourist arrivals from European countries are more sensitive to unemployment rates than those from overseas countries.
+H3: Overseas arrivals are more negatively affected by cost factors (oil prices ?exchange rate?) than European arrivals.
+H4: Demographic factors (population growth and median age) influence European and overseas arrivals differently.
+
+
+
+MOTIVATION:
+Importance of tourism to Italy (Economically and Historically)
+Are European and overseas tourists driven by different demographic and economical factors?
+
+
+DATA:
+...
 INFO on data sources data/raw/README
+
+METHODOLOGY:
+Country selecetions: geographically diverse overseas countries (overseas); EU and non EU European countries (europian)
+Compute per country correlation (per variable)
+Heatmap
+Network
 INFO on transformations scripts/README
+
+RESULTS:
+...
+
+
+CONCLUSION:
+...
+
+
 
 ...

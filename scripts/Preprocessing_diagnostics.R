@@ -31,10 +31,6 @@ View(oil_prices_data)
 
 # Final data preparation
 
-# Convert Year columns to numeric (GDP and Unemployement got left out)
-gdp_data$Year <- as.numeric(gdp_data$Year)
-unemployment_data$Year <- as.numeric(unemployment_data$Year)
-
 # Drop Germany France and Austria from exchange rate plots (same currency)
 exchange_rate_data <- exchange_rate_data %>%
   select(-c(Germany, France, Austria))
@@ -92,6 +88,16 @@ population_data <- sort_columns(population_data)
 population_data <- rename_columns(population_data, study_countries)
 exchange_rate_data <- sort_columns(exchange_rate_data)
 exchange_rate_data <- rename_columns(exchange_rate_data, study_countries_exchange_rate)
+
+# Convert Year columns to numeric (GDP and Unemployement got left out)
+gdp_data$Year <- as.numeric(gdp_data$Year)
+unemployment_data$Year <- as.numeric(unemployment_data$Year)
+oil_prices_data$Year <- as.numeric(oil_prices_data$Year)
+median_age_data$Year <- as.numeric(median_age_data$Year)
+population_data$Year <- as.numeric(population_data$Year)
+exchange_rate_data$Year <- as.numeric(exchange_rate_data$Year)
+tourist_arrivals$Year <- as.numeric(tourist_arrivals$Year)
+
 
 # View datasets to confirm
 View(tourist_arrivals)
@@ -232,7 +238,7 @@ save_plot <- function(plot, filename, width = 12, height = 8) {
 # ---- Transformations ----
 # Expect wide frames: Year + countries
 
-# 1) Log-levels for Arrivals & Oil
+# Log transformations
 tourist_arrivals_log <- tourist_arrivals %>%
   mutate(across(-Year, safe_log, .names = "log_{col}")) %>%
   select(Year, starts_with("log_")) %>%
@@ -248,7 +254,12 @@ unemployment_log <- unemployment_data %>%
   select(Year, starts_with("log_")) %>%
   rename_with(~ gsub("log_", "", .x), starts_with("log_"))
 
-# 2) Growth measures — prefer Δlog; keep % as robustness if you want
+gdp_log <- gdp_data %>%
+  mutate(across(-Year, safe_log, .names = "log_{col}")) %>%
+  select(Year, starts_with("log_")) %>%
+  rename_with(~ gsub("log_", "", .x), starts_with("log_"))
+
+# Delta log transformations (preferred for growth)
 gdp_dlog <- gdp_data %>%
   mutate(across(-Year, dlog, .names = "dlog_{col}")) %>%
   select(Year, starts_with("dlog_")) %>%
@@ -274,10 +285,10 @@ exchange_rate_pct  <- exchange_rate_data %>%
 
 #View all transformed data
 View(gdp_pct)
+View(gdp_log)
 View(exchange_rate_pct)
 View(tourist_arrivals_log)
 View(oil_prices_data)
-View(exchange_rate_pct)
 View(unemployment_data)
 View(median_age_data)
 View(population_data)
@@ -286,7 +297,8 @@ View(population_data)
 write.xlsx(gdp_pct, "data/final/transformed_gdp_pct.xlsx", overwrite = TRUE)
 write.xlsx(exchange_rate_pct, "data/final/transformed_exchange_rate_pct.xlsx", overwrite = TRUE)
 write.xlsx(tourist_arrivals_log, "data/final/transformed_tourist_arrivals_log.xlsx", overwrite = TRUE)
-write.xlsx(oil_prices_data, "data/final/transformed_oil_prices_data.xlsx", overwrite = TRUE)
+write.xlsx(oil_prices_log, "data/final/transformed_oil_prices_log.xlsx", overwrite = TRUE)
+write.xlsx(oil_prices_data, "data/final/oil_prices_data.xlsx", overwrite = TRUE)
 write.xlsx(unemployment_data, "data/final/unemployment_data.xlsx", overwrite = TRUE)
 write.xlsx(median_age_data, "data/final/median_age_data.xlsx", overwrite = TRUE)
 write.xlsx(population_data, "data/final/population_data.xlsx", overwrite = TRUE)
