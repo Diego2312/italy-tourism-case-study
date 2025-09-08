@@ -295,6 +295,7 @@ View(population_data)
 
 # Save final datasets
 write.xlsx(gdp_pct, "data/final/transformed_gdp_pct.xlsx", overwrite = TRUE)
+write.xlsx(gdp_log, "data/final/transformed_gdp_log.xlsx", overwrite = TRUE)
 write.xlsx(exchange_rate_pct, "data/final/transformed_exchange_rate_pct.xlsx", overwrite = TRUE)
 write.xlsx(tourist_arrivals_log, "data/final/transformed_tourist_arrivals_log.xlsx", overwrite = TRUE)
 write.xlsx(oil_prices_log, "data/final/transformed_oil_prices_log.xlsx", overwrite = TRUE)

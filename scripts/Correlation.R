@@ -76,9 +76,10 @@ lag_data <- function(data, lag_years = 1) {
     ungroup() %>%
     pivot_wider(names_from = Country, values_from = Value)
 }
-# Create lagged GDP data (1 year lag)
+# Create lagged GDP data 
 lagged_gdp_data_pct <- lag_data(gdp_data_pct, lag_years = 1)
 lagged_2_gdp_data_pct <- lag_data(gdp_data_pct, lag_years = 2)
+lagged_log_gdp_data_log <- lag_data(gdp_data_log, lag_years = 1)
 
 
 View(lagged_gdp_data_pct)
@@ -206,6 +207,9 @@ plot_cor_var <- function(cor_tbl, var_name, title) {
     delta = delta,
     p_t_test = p_t
   ))
+  
+  # Also return the plot
+  return(heatmap_var)
 }
 
 # Prepare variables for correlation analysis
@@ -218,7 +222,9 @@ vars <- list(
   "Median age (years)"       = median_age_data,
   "Population (% change)"       = population_data,
   "GDP per capita (% change) (lagged 1 year)" = lagged_gdp_data_pct,
-  "GDP per capita (% change) (lagged 2 years)" = lagged_2_gdp_data_pct
+  "GDP per capita (% change) (lagged 2 years)" = lagged_2_gdp_data_pct,
+  "GDP per capita (log level)"   = gdp_data_log,
+  "GDP per capita (log level) (lagged 1 year)"   = lagged_log_gdp_data_log
   
 )
 
@@ -252,6 +258,11 @@ cor_tbl_gdp_lagged <- cor_tbl %>%
 cor_tbl_gdp_lagged2 <- cor_tbl %>%
   filter(Variable == "GDP per capita (% change) (lagged 2 years)")
 
+cor_tbl_gdp_log <- cor_tbl %>%
+  filter(Variable == "GDP per capita (log level)")
+cor_tbl_gdp_log_lagged <- cor_tbl %>%
+  filter(Variable == "GDP per capita (log level) (lagged 1 year)")
+
 
 cor_tbl_exchange <- cor_tbl %>%
   filter(Variable == "Exchange rate (% change)")
@@ -270,12 +281,32 @@ print(cor_tbl_gdp_lagged)
 
 # Plot individual variable heatmaps
 
-plot_cor_var(cor_tbl_gdp, "GDP per capita (% change)", "Correlation of Tourist Arrivals with GDP per capita (% change)")
-plot_cor_var(cor_tbl_exchange, "Exchange rate (% change)", "Correlation of Tourist Arrivals with Exchange rate (% change)")
+#GDP
+gdp_hetamap = plot_cor_var(cor_tbl_gdp, "GDP per capita (% change)", "Correlation of Tourist Arrivals with GDP per capita (% change)")
+plot_cor_var(cor_tbl_gdp_lagged, "GDP per capita (% change) (lagged 1 year)", "Correlation of Tourist Arrivals with GDP per capita (% change) (lagged 1 year)")
+plot_cor_var(cor_tbl_gdp_log, "GDP per capita (log level)", "Correlation of Tourist Arrivals with GDP per capita (log level)")
+plot_cor_var(cor_tbl_gdp_log_lagged, "GDP per capita (log level) (lagged 1 year)", "Correlation of Tourist Arrivals with GDP per capita (log level) (lagged 1 year)")
+
+#Oil
 plot_cor_var(cor_tbl_oil, "Brent oil (log level)", "Correlation of Tourist Arrivals with Brent oil (log level)")
+
+#Exchange Rate
+plot_cor_var(cor_tbl_exchange, "Exchange rate (% change)", "Correlation of Tourist Arrivals with Exchange rate (% change)")
+
+#Unemployment
 plot_cor_var(cor_tbl_unemployment, "Unemployment rate (%)", "Correlation of Tourist Arrivals with Unemployment rate (%)")
+
+#Median Age
 plot_cor_var(cor_tbl_median_age, "Median age (years)", "Correlation of Tourist Arrivals with Median age (years)")
+
+#Population
 plot_cor_var(cor_tbl_population, "Population (% change)", "Correlation of Tourist Arrivals with Population (% change)")
+
+#Save GDP plots
+# Define output path
+plot_gdp_path <- "plots/results/correlation_heatmap_gdp.png"
+# Save plot
+ggsave(plot_gdp_path, plot = gdp_hetamap, width = 10, height = 6)
 
 # Plot heatmaps
 
@@ -290,7 +321,14 @@ heatmap_europe <- plot_cor_heatmap(cor_tbl_europe,
                             show_labels = TRUE)
 print(heatmap_europe)
 
+# Save Europe x Overseas heatmaps
+# Define output paths
+plot_overseas_path <- "plots/results/correlation_heatmap_overseas.png"
+plot_europe_path <- "plots/results/correlation_heatmap_europe.png"
 
+# Save plots
+ggsave(plot_overseas_path, plot = heatmap_overseas, width = 10, height = 6)
+ggsave(plot_europe_path, plot = heatmap_europe, width = 10, height = 6)
 
 
 
