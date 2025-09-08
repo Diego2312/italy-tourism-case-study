@@ -44,7 +44,8 @@ View(tourist_arrivals_log)
 # Helpers 
 
 # Correlation Table
-# Reuse your pivot_long()
+
+# Function to pivot data to long format
 pivot_long <- function(data){
   data %>%
     pivot_longer(-Year, names_to = "Country", values_to = "Value") %>%
@@ -53,7 +54,7 @@ pivot_long <- function(data){
 
 # Compute r for each Country × Variable
 compute_cor_table <- function(arrivals_wide,
-                              var_list_named,     # named list: list("GDP % change"=gdp_change, ...)
+                              var_list_named,
                               exclude_years = integer(0),
                               min_pairs = 5) {
   # Convert arrivals to long format
@@ -107,7 +108,7 @@ plot_cor_heatmap <- function(cor_tbl, title = "Arrivals vs Drivers — Correlati
   p <- ggplot(cor_tbl, aes(x = Country, y = Variable, fill = r)) +
     geom_tile(color = "white", size = 0.2, na.rm = TRUE) +
     scale_fill_gradient2(limits = c(-1, 1), oob = scales::squish,
-                         low = "#b2182b", mid = "white", high = "#2166ac",
+                         low = "red", mid = "white", high = "skyblue",
                          name = "r") +
     coord_fixed() +
     labs(title = title, x = NULL, y = NULL) +
@@ -126,14 +127,6 @@ plot_cor_heatmap <- function(cor_tbl, title = "Arrivals vs Drivers — Correlati
 }
 
 # Prepare variables for correlation analysis
-# Use the transformed frames you already created.
-# Examples (adjust to what you finalized):
-#  - gdp_change                -> % change
-#  - exchange_rate_change      -> % change (use normalized FX with country names)
-#  - oil_countrywide           -> levels; or use your log/Δlog version
-#  - unemployment_data         -> levels
-#  - median_age_data           -> levels
-#  - population_data           -> % change
 
 vars <- list(
   "GDP per capita (% change)"   = gdp_data_pct,
@@ -148,10 +141,9 @@ vars <- list(
 # Compute correlation table
 cor_tbl <- compute_cor_table(
   arrivals_wide   = tourist_arrivals,
-  var_list_named  = vars,  # optional: remove COVID shock
-  min_pairs       = 5                # require at least 5 overlapping years
+  var_list_named  = vars,
 )
-View(cor_tbl)
+
 
 # Compute correlation table excluding COVID years
 cor_tbl_no_covid <- compute_cor_table(
@@ -160,12 +152,26 @@ cor_tbl_no_covid <- compute_cor_table(
   var_list_named  = vars
 )
 
+# Plot heatmaps
+
+# With covid years
 heatmap <- plot_cor_heatmap(cor_tbl,
                             title = "Correlation of Tourist Arrivals with Drivers (by Country)",
                             show_labels = TRUE)
 print(heatmap)
 
+# No covid years
 heatmap_no_covid <- plot_cor_heatmap(cor_tbl_no_covid,
                             title = "Correlation of Tourist Arrivals with Drivers (by Country) — Excluding COVID Years",
                             show_labels = TRUE)
 print(heatmap_no_covid)
+
+# Save heatmaps
+
+# Define output paths
+plot_path <- "plots/results/correlation_heatmap.png"
+plot_no_covid_path <- "plots/results/correlation_heatmap_no_covid.png"
+
+# Save plots
+ggsave(plot_path, plot = heatmap, width = 10, height = 6)
+ggsave(plot_no_covid_path, plot = heatmap_no_covid, width = 10, height = 6)
