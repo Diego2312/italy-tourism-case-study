@@ -84,6 +84,11 @@ lagged_gdp_data_pct <- lag_data(gdp_data_pct, lag_years = 1)
 lagged_2_gdp_data_pct <- lag_data(gdp_data_pct, lag_years = 2)
 lagged_log_gdp_data_log <- lag_data(gdp_data_log, lag_years = 1)
 
+#Create lagged population data
+lagged_population_data <- lag_data(population_data, lag_years = 1)
+
+#Create lagged exchange rate data
+lagged_exchange_rate_data_pct <- lag_data(exchange_rate_data_pct, lag_years = 1)
 
 View(lagged_gdp_data_pct)
 View(gdp_data_pct)
@@ -220,10 +225,12 @@ plot_cor_var <- function(cor_tbl, var_name, title) {
 vars <- list(
   "GDP per capita (% change)"   = gdp_data_pct,
   "Exchange rate (% change)"    = exchange_rate_data_pct,
+  "Exchange rate (% change) (lagged 1 year)" = lagged_exchange_rate_data_pct,
   "Brent oil (log level)"    = oil_prices_data,
   "Unemployment rate (%)"    = unemployment_data,
   "Median age (years)"       = median_age_data,
   "Population (% change)"       = population_data,
+  "Population (% change) (lagged 1 year)" = lagged_population_data,
   "GDP per capita (% change) (lagged 1 year)" = lagged_gdp_data_pct,
   "GDP per capita (% change) (lagged 2 years)" = lagged_2_gdp_data_pct,
   "GDP per capita (log level)"   = gdp_data_log,
@@ -231,9 +238,9 @@ vars <- list(
   
 )
 
-# Compute correlation table
+# Compute correlation table (select pct or log arrivals)
 cor_tbl <- compute_cor_table(
-  arrivals_wide   = tourist_arrivals_pct,
+  arrivals_wide   = tourist_arrivals_log,
   var_list_named  = vars,
 )
 
@@ -269,14 +276,22 @@ cor_tbl_gdp_log_lagged <- cor_tbl %>%
 
 cor_tbl_exchange <- cor_tbl %>%
   filter(Variable == "Exchange rate (% change)")
+cor_tbl_exchange_lagged <- cor_tbl %>%
+  filter(Variable == "Exchange rate (% change) (lagged 1 year)")
+
+
 cor_tbl_oil <- cor_tbl %>%
   filter(Variable == "Brent oil (log level)")
 cor_tbl_unemployment <- cor_tbl %>%
   filter(Variable == "Unemployment rate (%)")
 cor_tbl_median_age <- cor_tbl %>%
   filter(Variable == "Median age (years)")
+
 cor_tbl_population <- cor_tbl %>%
   filter(Variable == "Population (% change)")
+
+cor_tbl_population_lagged <- cor_tbl %>%
+  filter(Variable == "Population (% change) (lagged 1 year)")
 
 
 print(cor_tbl_gdp)
@@ -295,6 +310,7 @@ plot_cor_var(cor_tbl_oil, "Brent oil (log level)", "Correlation of Tourist Arriv
 
 #Exchange Rate
 plot_cor_var(cor_tbl_exchange, "Exchange rate (% change)", "Correlation of Tourist Arrivals with Exchange rate (% change)")
+plot_cor_var(cor_tbl_exchange_lagged, "Exchange rate (% change) (lagged 1 year)", "Correlation of Tourist Arrivals with Exchange rate (% change) (lagged 1 year)")
 
 #Unemployment
 plot_cor_var(cor_tbl_unemployment, "Unemployment rate (%)", "Correlation of Tourist Arrivals with Unemployment rate (%)")
@@ -304,6 +320,7 @@ plot_cor_var(cor_tbl_median_age, "Median age (years)", "Correlation of Tourist A
 
 #Population
 plot_cor_var(cor_tbl_population, "Population (% change)", "Correlation of Tourist Arrivals with Population (% change)")
+plot_cor_var(cor_tbl_population_lagged, "Population (% change) (lagged 1 year)", "Correlation of Tourist Arrivals with Population (% change) (lagged 1 year)")
 
 #Save GDP plots
 # Define output path
