@@ -281,6 +281,11 @@ exchange_rate_pct  <- exchange_rate_data %>%
   select(Year, starts_with("pct_")) %>%
   rename_with(~ gsub("pct_", "", .x), starts_with("pct_"))
 
+tourist_arrivals_pct <- tourist_arrivals %>%
+  mutate(across(-Year, pct_change, .names = "pct_{col}")) %>%
+  select(Year, starts_with("pct_")) %>%
+  rename_with(~ gsub("pct_", "", .x), starts_with("pct_"))
+
 # Unemployment & Median age kept raw
 
 #View all transformed data
@@ -293,11 +298,14 @@ View(unemployment_data)
 View(median_age_data)
 View(population_data)
 
+
+
 # Save final datasets
 write.xlsx(gdp_pct, "data/final/transformed_gdp_pct.xlsx", overwrite = TRUE)
 write.xlsx(gdp_log, "data/final/transformed_gdp_log.xlsx", overwrite = TRUE)
 write.xlsx(exchange_rate_pct, "data/final/transformed_exchange_rate_pct.xlsx", overwrite = TRUE)
 write.xlsx(tourist_arrivals_log, "data/final/transformed_tourist_arrivals_log.xlsx", overwrite = TRUE)
+write.xlsx(tourist_arrivals_pct, "data/final/transformed_tourist_arrivals_pct.xlsx", overwrite = TRUE)
 write.xlsx(oil_prices_log, "data/final/transformed_oil_prices_log.xlsx", overwrite = TRUE)
 write.xlsx(oil_prices_data, "data/final/oil_prices_data.xlsx", overwrite = TRUE)
 write.xlsx(unemployment_data, "data/final/unemployment_data.xlsx", overwrite = TRUE)

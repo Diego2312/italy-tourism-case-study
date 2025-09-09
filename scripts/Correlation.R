@@ -13,6 +13,7 @@ library(scales)
 #Data paths
 tourist_arrivals_path <- "data/processed/processed_tourist_arrivals.xlsx"
 tourist_arrivals_log_path <- "data/final/transformed_tourist_arrivals_log.xlsx"
+tourist_arrivals_pct_path <- "data/final/transformed_tourist_arrivals_pct.xlsx"
 gdp_data_pct_path <- "data/final/transformed_gdp_pct.xlsx"
 gdp_data_log_path <- "data/final/transformed_gdp_log.xlsx"
 unemployment_data_path <- "data/final/unemployment_data.xlsx"
@@ -26,6 +27,7 @@ exchange_rate_data_pct_path <- "data/final/transformed_exchange_rate_pct.xlsx"
 # Load datasets
 tourist_arrivals <- read.xlsx(tourist_arrivals_path)
 tourist_arrivals_log <- read.xlsx(tourist_arrivals_log_path)
+tourist_arrivals_pct <- read.xlsx(tourist_arrivals_pct_path)
 gdp_data_pct <- read.xlsx(gdp_data_pct_path)
 gdp_data_log <- read.xlsx(gdp_data_log_path)
 unemployment_data <- read.xlsx(unemployment_data_path)
@@ -45,6 +47,7 @@ View(gdp_data_pct)
 View(gdp_data_log)
 View(tourist_arrivals)
 View(tourist_arrivals_log)
+View(tourist_arrivals_pct)
 
 # Helpers 
 
@@ -230,7 +233,7 @@ vars <- list(
 
 # Compute correlation table
 cor_tbl <- compute_cor_table(
-  arrivals_wide   = tourist_arrivals,
+  arrivals_wide   = tourist_arrivals_pct,
   var_list_named  = vars,
 )
 
