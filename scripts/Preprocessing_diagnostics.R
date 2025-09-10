@@ -176,10 +176,11 @@ plot_time_series <- function(data, title, ylab){
 
 # Function to plot variable vs tourist arrivals per country
 plot_vs_arrivals <- function(x_wide,
-                             x_name,           # short id e.g. "GDPpc"
-                             x_lab,            # x-axis label for plot
+                             x_name,
+                             x_lab,
+                             selected_country = NULL,
                              arrivals_wide = tourist_arrivals,
-                             exclude_years = integer(0),
+                             exclude_years = 0,
                              free_x = FALSE,   # FALSE = comparable x across panels
                              log_x_axis = FALSE,
                              log_y_axis = FALSE,
@@ -190,22 +191,17 @@ plot_vs_arrivals <- function(x_wide,
   x_long        <- pivot_long(x_wide)        %>% rename(xvar     = Value)
   
   # align & clean
-  df <- dplyr::inner_join(arrivals_long, x_long,
+  df <- inner_join(arrivals_long, x_long,
                           by = c("Year","Country")) %>%
-    dplyr::filter(!Year %in% exclude_years) %>%
-    dplyr::filter(is.finite(arrivals), is.finite(xvar))
-  
-  # quick per-country correlations (printed to console)
-  cor_tbl <- df %>%
-    dplyr::group_by(Country) %>%
-    dplyr::summarise(n = dplyr::n(),
-                     r = suppressWarnings(stats::cor(arrivals, xvar, use = "complete.obs")),
-                     .groups = "drop") %>%
-    dplyr::arrange(desc(r))
-  message("\nPer-country correlations with arrivals for: ", x_name)
-  print(cor_tbl, n = Inf)
+    filter(!Year %in% exclude_years) %>%
+    filter(is.finite(arrivals), is.finite(xvar))
   
   
+  # Plot only selected country if specified
+  if (!is.null(selected_country)) {
+    df <- df %>% filter(Country %in% selected_country)
+  }
+
   # base plot
   p <- ggplot(df, aes(x = xvar, y = arrivals)) +
     geom_point(color = "darkgreen", alpha = point_alpha) +
@@ -224,7 +220,9 @@ plot_vs_arrivals <- function(x_wide,
   if (log_x_axis) p <- p + scale_x_log10()
   if (log_y_axis) p <- p + scale_y_log10()
   
+  
   # Return plot object and correlations table invisibly
+
   
   return(p)
 }
@@ -358,12 +356,20 @@ gdp_scatter_raw = plot_vs_arrivals(gdp_data, x_name = "GDP per Capita (PPP)",
                  x_lab = "USD (PPP)",
                  free_x = FALSE, log_y_axis = TRUE)
 
+gdp_scatter_raw 
+
 gdp_scatter_raw
 
 gdp_scatter_pct = plot_vs_arrivals(gdp_pct, x_name = "GDP per Capita (PPP) % change",
                  x_lab = "USD (PPP) % change",
                  free_x = FALSE, log_y_axis = TRUE)
 gdp_scatter_pct
+
+# Plot selected country only 
+gdp_scatter_raw_Germany = plot_vs_arrivals(gdp_data, x_name = "GDP per Capita (PPP)",
+                 x_lab = "USD (PPP)",
+                 selected_country = c("Germany"),
+                 free_x = FALSE, log_y_axis = TRUE)
 
 #View(exchange_rate_pct)
 # Exchange rate (raw and % change)
