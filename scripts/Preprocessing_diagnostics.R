@@ -371,6 +371,8 @@ gdp_scatter_raw_Germany = plot_vs_arrivals(gdp_data, x_name = "GDP per Capita (P
                  selected_country = c("Germany"),
                  free_x = FALSE, log_y_axis = TRUE)
 
+gdp_scatter_raw_Germany
+
 #View(exchange_rate_pct)
 # Exchange rate (raw and % change)
 exrate_scatter_raw = plot_vs_arrivals(exchange_rate_data, x_name = "Exchange Rate",
